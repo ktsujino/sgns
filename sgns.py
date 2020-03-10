@@ -1,3 +1,5 @@
+#!/usr/local/bin/python3
+
 from collections import defaultdict
 import numpy as np
 
@@ -19,7 +21,7 @@ class SGNS:
                  init_learning_rate=0.1,
                  learning_rate_decay=0.9999,
                  minibatch_size=256,
-                 num_minibatches=10000):
+                 num_minibatches=20000):
         lexicon_builder = LexiconBuilder()
         print('building lexicon...')
         count = 0
@@ -79,15 +81,15 @@ class SGNS:
         self.minibatch_count += 1
         self.learning_rate *= self.learning_rate_decay
 
-    def train(self):
-        for _ in range(self.num_minibatches):
-            self.train_minibatch()
-
     def update_vectors(self, v_update, u_update):
         for i, dv in v_update.items():
             self.v[i] += dv
         for i, du in u_update.items():
             self.u[i] += du
+
+    def train(self):
+        for _ in range(self.num_minibatches):
+            self.train_minibatch()
 
     def save(self, output_file):
         fp = open(output_file, 'w')
@@ -101,4 +103,4 @@ class SGNS:
 if __name__ == '__main__':
     sgns = SGNS(text_dir='./corpus')
     sgns.train()
-    sgns.save('output.txt')
+    sgns.save('sgns.model')
